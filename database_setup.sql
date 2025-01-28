@@ -3,8 +3,8 @@ BEGIN;
 
 
 drop table if exists car_sales;
-drop table if exists car;
 drop table if exists transaction;
+drop table if exists car;
 drop table if exists dealer;
 drop table if exists customer;
 
@@ -125,8 +125,14 @@ INSERT INTO car (car_id,company, model, engine, transmission, color, body_style,
 SELECT DISTINCT car_id, company, model, engine, transmission, color, body_style, price
 FROM car_sales;
 
-INSERT INTO transaction (date,car_id)
-SELECT DISTINCT date, car_id
-FROM car_sales;
+INSERT INTO transaction (date, car_id, customer_id, dealer_id)
+SELECT DISTINCT 
+    cs.date, 
+    cs.car_id, 
+    c.customer_id, 
+    d.dealer_id
+FROM car_sales cs
+JOIN customer c ON cs.customer_name = c.customer_name AND cs.phone = c.phone
+JOIN dealer d ON cs.dealer_name = d.dealer_name AND cs.dealer_no = d.dealer_no;
 
 COMMIT;
